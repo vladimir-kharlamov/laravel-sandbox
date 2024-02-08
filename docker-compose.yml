@@ -47,18 +47,18 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
-    rabbitmq:
-        container_name: rabbitmq
-        hostname: rabbit
-        image: rabbitmq:3.12-management
-        environment:
-            - RABBITMQ_DEFAULT_USER=guest
-            - RABBITMQ_DEFAULT_PASS=guest
-        ports:
-            - '15672:15672'
-            - '5672:5672'
-        networks:
-            - sail
+#    rabbitmq:
+#        container_name: rabbitmq
+#        hostname: rabbit
+#        image: rabbitmq:3.12-management
+#        environment:
+#            - RABBITMQ_DEFAULT_USER=guest
+#            - RABBITMQ_DEFAULT_PASS=guest
+#        ports:
+#            - '15672:15672'
+#            - '5672:5672'
+#        networks:
+#            - sail
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin:latest

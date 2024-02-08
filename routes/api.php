@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,14 +15,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-/*Route::post('/tracking/', function (Request $request) {
-    $res = \App\Jobs\TrackHitJob::dispatch($request);
-    return response()->json([$res, $request->get('url')]);
-//    return response()->json(['message' => 'POST request received']);
+Route::prefix(‘sanctum’)->namespace(‘API’)->group(function() {
+    Route::post(‘register’, ‘AuthController@register’);
+    Route::post(‘token’, ‘AuthController@token’);
 });*/
 
+/* Test command with job database queued */
 Route::post('/tracking/', [\App\Http\Controllers\TrackingController::class, 'track']);
-//Route::get('/tracking/{tracker_public_id}', [\App\Http\Controllers\TrackingController::class, 'track']);
+
+/**
+ * Test jwt-auth library: authorize via access token on api
+ * See documentation https://jwt-auth.readthedocs.io/en/develop/laravel-installation/
+ */
+
+Route::middleware('auth')->get('/user',
+    function (Request $request) {
+        return $request->user();
+    });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
+});
